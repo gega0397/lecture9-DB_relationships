@@ -41,7 +41,7 @@ class Books:
         book = Books(res[1], res[2], res[3], res[4],
                      book_id=res[0],
                      con=con)
-        book.get_authors()
+        # book.get_authors()
         cur.close()
         return book
 
@@ -105,7 +105,7 @@ class Authors:
             return None
         author = Authors(res[1], res[2], author_id=res[0],
                          con=con)
-        author.get_books()
+        # author.get_books()
         cur.close()
         return author
 
