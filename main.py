@@ -63,6 +63,6 @@ def insert_data(con):
 
 if __name__ == '__main__':
     con = sqlite3.connect('books.db')
-    #create_tables(con)
-    #insert_data(con)
+    create_tables(con)
+    insert_data(con)
     main(con)
