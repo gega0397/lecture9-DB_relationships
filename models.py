@@ -32,14 +32,14 @@ class Books:
                 f"{[f'{author.first_name} {author.last_name}' for author in self.authors]}")
 
     @classmethod
-    def get_book(cls, book_id, con):
+    def get_book(cls, con, where=None):
         cur = con.cursor()
-        cur.execute(QUERIES["books"]["select"](where={"id": book_id}))
+        cur.execute(QUERIES["books"]["select"](where=where))
         res = cur.fetchone()
         if res is None:
             return None
         book = Books(res[1], res[2], res[3], res[4],
-                     book_id=book_id,
+                     book_id=res[0],
                      con=con)
         book.get_authors()
         cur.close()
@@ -66,7 +66,7 @@ class Books:
         if isinstance(other, Authors):
             cur.execute(QUERIES["book_authors"]["insert"], (self.id, other.id))
         elif isinstance(other, int):
-            other = Authors.get_author(other, self.con)
+            other = Authors.get_author(self.con, where={"id": other})[0]
             if other:
                 cur.execute(QUERIES["book_authors"]["insert"], (self.id, other.id))
         elif isinstance(other, list):
@@ -97,13 +97,13 @@ class Authors:
         return self
 
     @classmethod
-    def get_author(cls, author_id, con):
+    def get_author(cls, con, where=None):
         cur = con.cursor()
-        cur.execute(QUERIES["authors"]["select"](where={"id": author_id}))
+        cur.execute(QUERIES["authors"]["select"](where=where))
         res = cur.fetchone()
         if res is None:
             return None
-        author = Authors(res[1], res[2], author_id=author_id,
+        author = Authors(res[1], res[2], author_id=res[0],
                          con=con)
         author.get_books()
         cur.close()
@@ -132,7 +132,7 @@ class Authors:
         if isinstance(other, Books):
             cur.execute(QUERIES["book_authors"]["insert"], (other.id, self.id))
         elif isinstance(other, int):
-            other = Books.get_book(other, self.con)
+            other = Books.get_book(self.con, where={"id": other})
             if other:
                 cur.execute(QUERIES["book_authors"]["insert"], (other, self.id))
         elif isinstance(other, list):
