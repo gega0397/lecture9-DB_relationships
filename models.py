@@ -66,7 +66,7 @@ class Books:
         if isinstance(other, Authors):
             cur.execute(QUERIES["book_authors"]["insert"], (self.id, other.id))
         elif isinstance(other, int):
-            other = Authors.get_author(self.con, where={"id": other})[0]
+            other = Authors.get_author(self.con, where={"id": other})
             if other:
                 cur.execute(QUERIES["book_authors"]["insert"], (self.id, other.id))
         elif isinstance(other, list):
